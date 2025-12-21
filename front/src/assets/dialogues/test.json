@@ -1,0 +1,66 @@
+{
+  "chapterId": "1",
+  "chapterName": "le début",
+  "characters": ["alice"],
+  "startCharacters": ["alice", "{name}"],
+  "startNode": "intro",
+  "nodes": {
+    "intro": [
+      {
+        "speaker": "alice",
+        "text": "Oh… tu es enfin là {name}."
+      },
+      {
+        "speaker": "alice",
+        "text": "Ca fait longtemps que tu attends ?",
+        "choices": [
+          {
+            "text": "Salut 👋",
+            "next": [
+              {
+                "speaker": "alice",
+                "text": "Ça me fait plaisir de te voir sourire."
+              },
+              {
+                "speaker": "alice",
+                "text": "Comment ça va ?"
+              }
+            ],
+            "effects": { "affection": 1 }
+          },
+          {
+            "text": "C'était long.",
+            "next": [
+              {
+                "speaker": "alice",
+                "text": "Ah… d'accord."
+              }
+            ],
+            "effects": { "affection": -1 }
+          }
+        ]
+      },
+      {
+        "speaker": "{name}",
+        "text": "Allons ailleurs si tu veux bien."
+      },
+      {
+        "speaker": "alice",
+        "text": "D'accord."
+      },
+      {
+        "speaker": "veronica",
+        "text": "Si si los tapas"
+      },
+      {
+        "speaker": "{name}",
+        "text": "??"
+      },
+      {
+        "speaker": "alice",
+        "text": "jsp sah",
+        "end": true
+      }
+    ]
+  }
+}
