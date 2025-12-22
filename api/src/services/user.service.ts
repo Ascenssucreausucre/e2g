@@ -78,19 +78,26 @@ export async function getUnlockedChapters(userId: string) {
       )}]::int[]`
     : Prisma.sql`ARRAY[]::int[]`;
 
-  // playerState id (uuid string)
   const playerStateId = ps.id;
 
   const rows = await prisma.$queryRaw(
     Prisma.sql`
-      SELECT c.*
+      SELECT DISTINCT c.*
       FROM "Chapter" c
       LEFT JOIN "ChapterRequirement" cr ON cr."chapterId" = c.id
       LEFT JOIN "AffinityRequirement" ar ON ar."chapterId" = c.id
       LEFT JOIN "Affinity" a ON a."playerStateId" = ${playerStateId} AND a."characterId" = ar."characterId"
       WHERE c."active" = true
-        AND (cr.id IS NULL OR cr."neededChapters" <@ ${completedArray})
-        AND (ar.id IS NULL OR COALESCE(a.value, 0) >= ar."affinity")
+        AND (
+          cr.id IS NULL
+          OR cr."neededChapters" IS NULL
+          OR cr."neededChapters" <@ ${completedArray}
+        )
+        AND (
+          ar.id IS NULL
+          OR ar."affinity" IS NULL
+          OR COALESCE(a.value, 0) >= ar."affinity"
+        )
     `
   );
 

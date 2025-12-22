@@ -50,7 +50,16 @@ export async function getChapterById(id: number) {
 }
 
 export async function getAllChapters() {
-  return prisma.chapter.findMany();
+  return prisma.chapter.findMany({
+    include: {
+      chapterRequirements: {
+        select: { neededChapters: true },
+      },
+      affinityRequirements: {
+        select: { characterId: true, affinity: true },
+      },
+    },
+  });
 }
 
 export async function getActiveChapters() {
