@@ -13,7 +13,7 @@ export async function addCompletedChapter(userId: string, chapterId: number) {
 
 export async function updateCharacterAffinity(
   userId: string,
-  characterId: string,
+  characterId: number,
   value: number
 ) {
   const playerState = await prisma.playerState.findUnique({

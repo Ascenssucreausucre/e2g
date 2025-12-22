@@ -56,19 +56,23 @@ model Character {
 
   chapters Chapter[] @relation("ChapterCharacters")
   affinities Affinity[]
+
+  affinityRequirements AffinityRequirement[]
 }
 
 model Chapter {
   id      Int @id @default(autoincrement())
   title   String
-  startCharacterIds String?
+  startCharacterIds Int[]
   order   String?
   cost    Int     @default(0)
-  active  Boolean @default(true)
+  active  Boolean @default(false)
 
   characters Character[] @relation("ChapterCharacters")
   dialogue DialogueData[]
   completedBy PlayerState[]
+  chapterRequirements ChapterRequirement?
+  affinityRequirements AffinityRequirement?
 }
 
 model DialogueData {
@@ -76,4 +80,22 @@ model DialogueData {
   chapterId Int
   chapter   Chapter @relation(fields: [chapterId], references: [id])
   content   Json
+}
+
+model ChapterRequirement {
+  id        String   @id @default(uuid())
+  chapterId Int      @unique
+  neededChapters Int[]
+
+  chapter   Chapter @relation(fields: [chapterId], references: [id])
+}
+
+model AffinityRequirement {
+  id          String   @id @default(uuid())
+  chapterId   Int      @unique
+  characterId Int
+  affinity    Int
+
+  character   Character @relation(fields: [characterId], references: [id])
+  chapter     Chapter   @relation(fields: [chapterId], references: [id])
 }

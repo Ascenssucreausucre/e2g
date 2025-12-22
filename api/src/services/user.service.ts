@@ -1,4 +1,5 @@
 // src/services/user.service.ts
+import { Prisma } from "@prisma/client";
 import { prisma } from "../prisma/client";
 import bcrypt from "bcrypt";
 
@@ -57,4 +58,41 @@ export async function getOrCreatePlayerState(userId: string) {
     console.error("Error in getOrCreatePlayerState:", error.message);
     throw error;
   }
+}
+
+export async function getUnlockedChapters(userId: string) {
+  const ps = await prisma.playerState.findUnique({
+    where: { userId },
+    include: {
+      completedChapters: { select: { id: true } },
+      affinities: true,
+    },
+  });
+  if (!ps) throw new Error("PlayerState not found");
+
+  const completedIds = ps.completedChapters.map((c) => c.id);
+
+  const completedArray = completedIds.length
+    ? Prisma.sql`ARRAY[${Prisma.join(
+        completedIds.map((id) => Prisma.sql`${id}`)
+      )}]::int[]`
+    : Prisma.sql`ARRAY[]::int[]`;
+
+  // playerState id (uuid string)
+  const playerStateId = ps.id;
+
+  const rows = await prisma.$queryRaw(
+    Prisma.sql`
+      SELECT c.*
+      FROM "Chapter" c
+      LEFT JOIN "ChapterRequirement" cr ON cr."chapterId" = c.id
+      LEFT JOIN "AffinityRequirement" ar ON ar."chapterId" = c.id
+      LEFT JOIN "Affinity" a ON a."playerStateId" = ${playerStateId} AND a."characterId" = ar."characterId"
+      WHERE c."active" = true
+        AND (cr.id IS NULL OR cr."neededChapters" <@ ${completedArray})
+        AND (ar.id IS NULL OR COALESCE(a.value, 0) >= ar."affinity")
+    `
+  );
+
+  return rows;
 }

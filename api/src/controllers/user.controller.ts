@@ -52,3 +52,12 @@ export async function getMyState(req: Request, res: Response) {
       .json({ message: "Could not get or create player state" });
   }
 }
+
+export async function getUnlockedChapters(req: Request, res: Response) {
+  const user = req.user;
+  if (!user) return res.status(401).json({ message: "Unauthorized" });
+  try {
+    const chapters = await userService.getUnlockedChapters(user.userId);
+    return res.json(chapters);
+  } catch (error) {}
+}
