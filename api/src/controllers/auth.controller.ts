@@ -7,8 +7,9 @@ export async function login(req: Request, res: Response) {
     const token = await authLogin(email, password);
 
     res.cookie("auth", token, { httpOnly: true });
-    res.sendStatus(204);
+    res.status(200).json({ message: "Login successful" });
   } catch (error: Error | any) {
+    console.error("AuthController.login error:", error);
     return res
       .status(401)
       .json({ message: error?.message || "Internal server error" });

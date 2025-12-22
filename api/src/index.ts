@@ -3,12 +3,25 @@ import express from "express";
 import { prisma } from "./prisma/client";
 import { registerRoutes } from "./routes";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+
+const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
 
 const app = express();
 const PORT = 3001;
 
 app.use(express.json());
 app.use(cookieParser());
+
+// CORS
+const corsOptions = {
+  origin: corsOrigin,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+app.use(cors(corsOptions));
+
 registerRoutes(app);
 
 app.get("/health", async (_req, res) => {
