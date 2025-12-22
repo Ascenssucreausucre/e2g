@@ -40,10 +40,11 @@ model PlayerState {
 model Affinity {
   id            String      @id @default(uuid())
   playerStateId String
-  characterId   String
+  characterId   Int
   value         Int         @default(0)
 
   playerState   PlayerState @relation(fields: [playerStateId], references: [id])
+  character     Character   @relation(fields: [characterId], references: [id])
   @@unique([playerStateId, characterId])
 }
 
@@ -54,6 +55,7 @@ model Character {
   portrait    String?
 
   chapters Chapter[] @relation("ChapterCharacters")
+  affinities Affinity[]
 }
 
 model Chapter {

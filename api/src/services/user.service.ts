@@ -48,6 +48,10 @@ export async function getOrCreatePlayerState(userId: string) {
         userId,
       },
       update: {},
+      include: {
+        completedChapters: { select: { id: true, title: true } },
+        affinities: { select: { characterId: true, value: true } },
+      },
     });
   } catch (error: Error | any) {
     console.error("Error in getOrCreatePlayerState:", error.message);

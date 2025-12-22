@@ -5,6 +5,7 @@ import authRoutes from "./auth.routes";
 import chapterRoutes from "./chapter.routes";
 import dialogueRoutes from "./dialoguedata.routes";
 import characterRoutes from "./character.routes";
+import saveRoutes from "./save.routes";
 
 export function registerRoutes(app: Express) {
   app.use("/users", userRoutes);
@@ -12,4 +13,5 @@ export function registerRoutes(app: Express) {
   app.use("/chapters", chapterRoutes);
   app.use("/dialogues", dialogueRoutes);
   app.use("/characters", characterRoutes);
+  app.use("/save", saveRoutes);
 }

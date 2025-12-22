@@ -47,6 +47,8 @@ export async function getMyState(req: Request, res: Response) {
     return res.json(state);
   } catch (error) {
     console.error("controllers.user.getMyState error:", error);
-    return res.status(500).json({ message: "Could not get or create player state" });
+    return res
+      .status(500)
+      .json({ message: "Could not get or create player state" });
   }
 }
