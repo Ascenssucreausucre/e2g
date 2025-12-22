@@ -1,7 +1,6 @@
 // src/services/user.service.ts
 import { prisma } from "../prisma/client";
 import bcrypt from "bcrypt";
-import Error from "express";
 
 export async function createUser(email: string, password: string) {
   const hashedPassword = await bcrypt.hash(password, 12);

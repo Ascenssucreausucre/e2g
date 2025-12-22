@@ -1,15 +1,19 @@
 import { prisma } from "../prisma/client";
-import { randomUUID } from "crypto";
 
-export async function createChapter(title: string, id?: string) {
+export async function createChapter(title: string) {
   return prisma.chapter.create({
-    data: { id: id || randomUUID(), title },
+    data: { title },
   });
 }
 
-export async function getChapterById(id: string) {
+export async function getChapterById(id: number) {
   return prisma.chapter.findUnique({
     where: { id },
+    include: {
+      dialogue: {
+        select: { id: true, content: true },
+      },
+    },
   });
 }
 
@@ -17,33 +21,22 @@ export async function getAllChapters() {
   return prisma.chapter.findMany();
 }
 
-export async function deleteChapter(id: string) {
+export async function deleteChapter(id: number) {
   return prisma.chapter.delete({
     where: { id },
   });
 }
 
 export async function updateChapter(
-  id: string,
-  {
-    title,
-    order,
-    cost,
-    active,
-  }: { title?: string; order?: string; cost?: number; active?: boolean }
+  id: number,
+  updates: { title?: string; order?: string; cost?: number; active?: boolean }
 ) {
-  const data: Record<string, unknown> = {};
-  if (title !== undefined) data.title = title;
-  if (order !== undefined) data.order = order;
-  if (cost !== undefined) data.cost = cost;
-  if (active !== undefined) data.active = active;
-
-  if (Object.keys(data).length === 0) {
+  if (Object.keys(updates).length === 0) {
     throw new Error("No fields provided to update");
   }
 
   return prisma.chapter.update({
     where: { id },
-    data,
+    data: updates,
   });
 }

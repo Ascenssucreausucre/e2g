@@ -3,11 +3,16 @@ import { Request, Response } from "express";
 
 export async function login(req: Request, res: Response) {
   const { email, password } = req.body;
+  try {
+    const token = await authLogin(email, password);
 
-  const token = await authLogin(email, password);
-
-  res.cookie("auth", token, { httpOnly: true });
-  res.sendStatus(204);
+    res.cookie("auth", token, { httpOnly: true });
+    res.sendStatus(204);
+  } catch (error: Error | any) {
+    return res
+      .status(401)
+      .json({ message: error?.message || "Internal server error" });
+  }
 }
 
 export async function logout(_req: Request, res: Response) {

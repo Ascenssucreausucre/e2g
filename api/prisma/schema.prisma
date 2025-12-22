@@ -48,7 +48,7 @@ model Affinity {
 }
 
 model Character {
-  id          String @id
+  id          Int @id @default(autoincrement())
   name        String
   description String?
   portrait    String?
@@ -57,7 +57,7 @@ model Character {
 }
 
 model Chapter {
-  id      String @id
+  id      Int @id @default(autoincrement())
   title   String
   startCharacterIds String?
   order   String?
@@ -71,7 +71,7 @@ model Chapter {
 
 model DialogueData {
   id String @id @default(uuid())
-  chapterId String
+  chapterId Int
   chapter   Chapter @relation(fields: [chapterId], references: [id])
   content   Json
 }

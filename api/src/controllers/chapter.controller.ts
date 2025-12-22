@@ -1,12 +1,13 @@
 import * as chapterService from "../services/chapter.service";
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
+import toIntId from "../utils/toIntId";
 
 export async function createChapter(req: Request, res: Response) {
-  const { title, id } = req.body;
+  const { title } = req.body;
   if (!title) {
     return res.status(400).json({ error: "Title is required" });
   }
-  const newChapter = await chapterService.createChapter(title, id);
+  const newChapter = await chapterService.createChapter(title);
   res.status(201).json(newChapter);
 }
 
@@ -16,7 +17,7 @@ export async function publishChapter(req: Request, res: Response) {
     return res.status(400).json({ error: "Chapter ID is required" });
   }
   try {
-    const updatedChapter = await chapterService.updateChapter(id, {
+    const updatedChapter = await chapterService.updateChapter(toIntId(id), {
       active: true,
     });
     if (!updatedChapter) {
@@ -37,7 +38,7 @@ export async function unpublishChapter(req: Request, res: Response) {
     return res.status(400).json({ error: "Chapter ID is required" });
   }
   try {
-    const updatedChapter = await chapterService.updateChapter(id, {
+    const updatedChapter = await chapterService.updateChapter(toIntId(id), {
       active: false,
     });
     if (!updatedChapter) {
@@ -57,7 +58,7 @@ export async function getChapter(req: Request, res: Response) {
   if (!id) {
     return res.status(400).json({ error: "Chapter ID is required" });
   }
-  const chapter = await chapterService.getChapterById(id);
+  const chapter = await chapterService.getChapterById(toIntId(id));
   if (chapter) {
     return res.json(chapter);
   } else {
@@ -75,7 +76,7 @@ export async function deleteChapter(req: Request, res: Response) {
     return res.status(400).json({ error: "Chapter ID is required" });
   }
   try {
-    await chapterService.deleteChapter(id);
+    await chapterService.deleteChapter(toIntId(id));
     return res.status(204).send();
   } catch (error) {
     return res.status(500).json({ error: "Failed to delete chapter" });
@@ -89,7 +90,7 @@ export async function updateChapter(req: Request, res: Response) {
     return res.status(400).json({ error: "Chapter ID is required" });
   }
   try {
-    const updatedChapter = await chapterService.updateChapter(id, {
+    const updatedChapter = await chapterService.updateChapter(toIntId(id), {
       title,
       order,
       cost,
