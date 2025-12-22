@@ -1,41 +1,95 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Input from "../components/UI/Input";
+import { useLogin } from "../hooks/useLogin";
 
 export default function Home() {
-  const [userName, setUserName] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [credentials, setCredentials] = useState<{
+    userName: string;
+    password: string;
+    email: string;
+  }>({
+    userName: "",
+    password: "",
+    email: "",
+  });
 
+  const { mutate, isPending } = useLogin();
   const navigate = useNavigate();
 
-  const gameStart = (e: FormEvent) => {
+  const handleChange = (e: FormEvent<HTMLInputElement>) => {
+    const { name, value } = e.currentTarget;
+    setCredentials((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (userName && userName?.length > 0) {
-      localStorage.setItem("userName", userName);
-      navigate("/game");
-    } else {
-      setErrorMessage("You need a username in order to start.");
+    const { userName, email, password } = credentials;
+    if (
+      userName.trim().length < 1 ||
+      email.trim().length < 1 ||
+      password.length < 1
+    ) {
+      alert("Please fill in all fields");
       return;
     }
+    const res = await fetch(
+      `${
+        import.meta.env.VITE_API_URL || "http://localhost:3001"
+      }/users/register`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userName, email, password }),
+      }
+    );
+
+    if (!res.ok) {
+      alert("Registration failed");
+      return;
+    }
+
+    mutate({ email, password });
+
+    return navigate("/game");
   };
+
   return (
     <div className="home w-1/2 max-w-lg min-w-50">
-      {errorMessage && (
-        <div className="bg-red-500 text-amber-50 font-bold py-2 px-4 rounded-md">
-          <p>{errorMessage}</p>
-        </div>
-      )}
       <form
-        onSubmit={gameStart}
+        onSubmit={handleSubmit}
         className="flex flex-col gap-2 bg-slate-600 p-4 rounded-md"
       >
-        <label htmlFor="username">Username</label>
-        <input
-          className="py-1 px-2 bg-amber-50 rounded-lg text-black"
+        <Input
           id="username"
           type="text"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          placeholder="Select your username"
+          value={credentials?.userName || ""}
+          onChange={handleChange}
+          label="Username"
+          placeholder="Enter your username"
+          name="userName"
+        />
+        <Input
+          id="email"
+          type="email"
+          value={credentials?.email || ""}
+          onChange={handleChange}
+          label="Email"
+          placeholder="Enter your email"
+          name="email"
+        />
+        <Input
+          id="password"
+          type="password"
+          value={credentials?.password || ""}
+          onChange={handleChange}
+          label="Password"
+          placeholder="Enter your password"
+          name="password"
         />
         <button
           type="submit"
@@ -43,6 +97,9 @@ export default function Home() {
         >
           Play
         </button>
+        <p>
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
       </form>
     </div>
   );
