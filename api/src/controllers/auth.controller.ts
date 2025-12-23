@@ -1,3 +1,4 @@
+import { env } from "node:process";
 import { authLogin } from "../services/auth.service";
 import { Request, Response } from "express";
 
@@ -6,7 +7,10 @@ export async function login(req: Request, res: Response) {
   try {
     const token = await authLogin(email, password);
 
-    res.cookie("auth", token, { httpOnly: true });
+    res.cookie("auth", token, {
+      httpOnly: true,
+      secure: env.NODE_ENV !== "development",
+    });
     res.status(200).json({ message: "Login successful" });
   } catch (error: Error | any) {
     console.error("AuthController.login error:", error);
