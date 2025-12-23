@@ -1,5 +1,5 @@
 // src/services/user.service.ts
-import { Chapter } from "@prisma/client";
+import { Chapter } from "../generated/prisma/client";
 import { prisma } from "../prisma/client";
 import bcrypt from "bcrypt";
 
