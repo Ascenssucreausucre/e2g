@@ -3,13 +3,18 @@ import { Chapter } from "../generated/prisma/client";
 import { prisma } from "../prisma/client";
 import bcrypt from "bcrypt";
 
-export async function createUser(email: string, password: string) {
+export async function createUser(
+  email: string,
+  password: string,
+  username: string
+) {
   const hashedPassword = await bcrypt.hash(password, 12);
 
   return prisma.user.create({
     data: {
       email,
       password: hashedPassword,
+      username,
     },
     select: {
       id: true,

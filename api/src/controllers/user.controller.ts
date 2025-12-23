@@ -3,13 +3,13 @@ import { Request, Response } from "express";
 import * as userService from "../services/user.service";
 
 export async function register(req: Request, res: Response) {
-  const { email, password } = req.body;
+  const { email, password, userName } = req.body;
 
-  if (!email || !password) {
+  if (!email || !password || !userName) {
     return res.status(400).json({ error: "Missing fields" });
   }
 
-  const user = await userService.createUser(email, password);
+  const user = await userService.createUser(email, password, userName);
   res.status(201).json(user);
 }
 
