@@ -4,6 +4,7 @@ import { prisma } from "./prisma/client";
 import { registerRoutes } from "./routes";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { Request, Response } from "express";
 
 const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
 
@@ -24,7 +25,7 @@ app.use(cors(corsOptions));
 
 registerRoutes(app);
 
-app.get("/health", async (_req, res) => {
+app.get("/health", async (_req: Request, res: Response) => {
   try {
     const users = await prisma.user.count();
     res.json({
