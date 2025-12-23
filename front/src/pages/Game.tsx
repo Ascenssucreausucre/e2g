@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import GamePlay from "../components/GamePlay";
 import { useSession } from "../hooks/useSession";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { apiFetch } from "../api/apiFetch";
 import { useQuery } from "@tanstack/react-query";
 import type { Chapter } from "../utils/types";
