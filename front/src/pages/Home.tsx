@@ -14,7 +14,7 @@ export default function Home() {
     email: "",
   });
 
-  const { mutate, isPending } = useLogin();
+  const { mutate } = useLogin();
   const navigate = useNavigate();
 
   const handleChange = (e: FormEvent<HTMLInputElement>) => {

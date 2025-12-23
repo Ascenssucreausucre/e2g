@@ -14,11 +14,7 @@ export default function Game() {
   const { data, isLoading } = useSession();
   const user = data?.user;
 
-  const {
-    data: chapters,
-    isLoading: isChaptersLoading,
-    error,
-  } = useQuery({
+  const { data: chapters, isLoading: isChaptersLoading } = useQuery({
     queryKey: ["chapters"],
     queryFn: async () => apiFetch<Chapter[]>("/users/me/unlocked-chapters"),
   });
