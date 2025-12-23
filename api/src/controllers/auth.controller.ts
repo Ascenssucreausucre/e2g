@@ -4,12 +4,18 @@ import { Request, Response } from "express";
 
 export async function login(req: Request, res: Response) {
   const { email, password } = req.body;
+  const envVar = env.NODE_ENV !== "development";
+  console.log(
+    envVar ? "Running in production mode" : "Running in development mode"
+  );
   try {
     const token = await authLogin(email, password);
 
     res.cookie("auth", token, {
       httpOnly: true,
       secure: env.NODE_ENV !== "development",
+      sameSite: env.NODE_ENV === "development" ? "lax" : "none",
+      path: "/",
     });
     res.status(200).json({ message: "Login successful" });
   } catch (error: Error | any) {
