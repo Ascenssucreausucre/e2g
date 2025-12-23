@@ -57,7 +57,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={isPending}
-          className="bg-amber-500 px-4 py-2 rounded-md w-full"
+          className="bg-amber-500 px-4 py-2 rounded-md w-full disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Login
         </button>

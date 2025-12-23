@@ -16,9 +16,19 @@ export type Choice = {
 };
 
 export type Chapter = {
-  chapterId: string;
-  characters: string[];
-  startNode: string;
-  startCharacters: string[];
-  nodes: Record<string, InlineNode[]>;
+  id: number;
+  title: string;
+  order: number | null;
+  cost: number;
+  actruve: boolean;
+  startCharacters: number[];
+};
+
+export type GameChapter = Chapter & {
+  dialogue: Dialogue[];
+};
+
+export type Dialogue = {
+  id: string;
+  content: InlineNode[];
 };

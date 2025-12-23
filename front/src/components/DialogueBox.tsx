@@ -1,16 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import dialogueSkip from "../assets/audio/skip.wav";
-import type { Chapter, InlineNode, Choice } from "../utils/types";
+import type { InlineNode, Choice, GameChapter } from "../utils/types";
 
 type Props = {
-  chapter: Chapter;
+  chapter: GameChapter;
   userName: string;
   onComplete?: () => void;
   onApplyEffects?: (effects?: { affection?: number }) => void;
 };
 
 type Slot = {
-  name: string | null;
+  name: string | null | number;
 };
 
 export default function DialogueBox({
@@ -22,7 +22,7 @@ export default function DialogueBox({
   const startCharacters = chapter.startCharacters;
 
   const [script, setScript] = useState<InlineNode[]>(
-    chapter.nodes[chapter.startNode]
+    chapter.dialogue[0].content
   );
   const [index, setIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
@@ -176,7 +176,7 @@ export default function DialogueBox({
                   ? `/assets/characters/${
                       slot.name === userName
                         ? "{name}"
-                        : slot.name.toLowerCase()
+                        : slot.name.toString().toLowerCase()
                     }/default.png`
                   : "/assets/empty.png"
               }

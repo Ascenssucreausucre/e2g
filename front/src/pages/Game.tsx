@@ -1,57 +1,68 @@
-import test from "../assets/dialogues/test.json";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GamePlay from "../components/GamePlay";
 import { useSession } from "../hooks/useSession";
+import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../api/apiFetch";
+import { useQuery } from "@tanstack/react-query";
+import type { Chapter } from "../utils/types";
 
 export default function Game() {
   const [gameState, setGameState] = useState<any>(null);
-  const { data, isLoading } = useSession();
-  console.log(data);
-  const chapters = [
-    { name: "Chapter 1", id: "test" },
-    { name: "Chapter 2", id: "test", locked: true },
-    { name: "Chapter 3", id: "test", locked: true },
-    { name: "Chapter 4", id: "test", locked: true },
-  ];
+  const [playingChapterId, setPlayingChapterId] = useState<number | null>(null);
 
-  const playChapter = (chapter: any) => {
-    setGameState(chapter);
-  };
-  if (isLoading) {
+  const navigate = useNavigate();
+  const { data, isLoading } = useSession();
+  const user = data?.user;
+
+  const {
+    data: chapters,
+    isLoading: isChaptersLoading,
+    error,
+  } = useQuery({
+    queryKey: ["chapters"],
+    queryFn: async () => apiFetch<Chapter[]>("/users/me/unlocked-chapters"),
+  });
+
+  const { data: playingChapter } = useQuery({
+    queryKey: ["chapter", playingChapterId],
+    queryFn: () => apiFetch<Chapter>(`/chapters/${playingChapterId}`),
+    enabled: playingChapterId !== null,
+  });
+
+  useEffect(() => {
+    console.log({ playingChapter });
+    if (!playingChapter) return;
+    setGameState(playingChapter);
+  }, [playingChapter]);
+
+  if (isLoading && isChaptersLoading) {
     return <div>Loading...</div>;
+  }
+  if (!isLoading && !user) {
+    return navigate("/");
   }
   return (
     <div className="game-select bg-amber-200 w-2xl px-12 py-4 rounded-2xl">
       <h2 className="font-black text-xl text-black">
-        Cc mon {data.username} sucré au sucre
+        Cc mon {user.username} sucré au sucre
       </h2>
       <p className="font-black text-md text-black">Voici les chapitres :</p>
       <ul>
-        {chapters.map((chapter) => {
-          if (!chapter.locked) {
-            return (
-              <li
-                className={`bg-amber-800 cursor-pointer my-3 py-2 rounded-md`}
-                onClick={() => playChapter(test)}
-              >
-                {chapter.name}
-              </li>
-            );
-          } else {
-            return (
-              <li
-                className={`bg-amber-500 cursor-not-allowed my-3 py-2 rounded-md`}
-              >
-                {chapter.name}
-              </li>
-            );
-          }
-        })}
+        {chapters &&
+          chapters.map((chapter) => (
+            <li
+              className={`bg-amber-800 cursor-pointer my-3 py-2 rounded-md`}
+              onClick={() => setPlayingChapterId(chapter.id)}
+              key={`chapter-${chapter.id}`}
+            >
+              {chapter.title}
+            </li>
+          ))}
       </ul>
       {gameState ? (
         <GamePlay
           chapter={gameState}
-          userName={data.username}
+          userName={user.username}
           onClose={() => setGameState(null)}
         />
       ) : null}
