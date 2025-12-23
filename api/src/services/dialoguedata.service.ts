@@ -1,9 +1,9 @@
+import { JsonObject } from "../generated/prisma/internal/prismaNamespaceBrowser";
 import { prisma } from "../prisma/client";
-import { Prisma } from "@prisma/client";
 
 export async function createDialogueData(
   chapterId: number,
-  content: Prisma.JsonObject
+  content: JsonObject
 ) {
   return prisma.dialogueData.create({
     data: {
@@ -27,7 +27,7 @@ export async function getDialogueDataById(id: string) {
 
 export async function updateDialogueData(
   id: string,
-  updates: { content: Prisma.JsonObject }
+  updates: { content: JsonObject }
 ) {
   return prisma.dialogueData.update({
     where: { id },

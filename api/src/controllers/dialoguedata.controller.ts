@@ -1,7 +1,7 @@
-import { Prisma } from "@prisma/client";
 import { Request, Response } from "express";
 import * as dialogueDataService from "../services/dialoguedata.service";
 import toIntId from "../utils/toIntId";
+import { JsonObject } from "../generated/prisma/internal/prismaNamespaceBrowser";
 
 export async function createDialogueData(req: Request, res: Response) {
   const { chapterId } = req.params;
@@ -17,7 +17,7 @@ export async function createDialogueData(req: Request, res: Response) {
   try {
     const dialogueData = await dialogueDataService.createDialogueData(
       toIntId(chapterId),
-      content as Prisma.JsonObject
+      content as JsonObject
     );
     return res.status(201).json(dialogueData);
   } catch (error) {
@@ -50,7 +50,7 @@ export async function updateDialogueData(req: Request, res: Response) {
 
   try {
     const dialogueData = await dialogueDataService.updateDialogueData(id, {
-      content: content as Prisma.JsonObject,
+      content: content as JsonObject,
     });
     return res.json(dialogueData);
   } catch (error) {
