@@ -18,5 +18,5 @@ export async function login(req: Request, res: Response) {
 
 export async function logout(_req: Request, res: Response) {
   res.clearCookie("auth");
-  res.sendStatus(204);
+  res.status(200).json({ message: "Logout successful" });
 }

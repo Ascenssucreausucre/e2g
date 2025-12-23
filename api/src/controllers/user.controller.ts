@@ -33,7 +33,7 @@ export async function getMe(req: Request, res: Response) {
   }
   const userData = await userService.getUserById(user.userId);
   if (userData) {
-    return res.json(userData);
+    return res.json({ user: userData });
   } else {
     return res.status(404).json({ message: "User not found" });
   }
