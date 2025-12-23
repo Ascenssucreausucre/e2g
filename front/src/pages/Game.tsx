@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import GamePlay from "../components/GamePlay";
 import { useSession } from "../hooks/useSession";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { apiFetch } from "../api/apiFetch";
 import { useQuery } from "@tanstack/react-query";
 import type { Chapter } from "../utils/types";
@@ -9,8 +9,6 @@ import type { Chapter } from "../utils/types";
 export default function Game() {
   const [gameState, setGameState] = useState<any>(null);
   const [playingChapterId, setPlayingChapterId] = useState<number | null>(null);
-
-  const navigate = useNavigate();
   const { data, isLoading } = useSession();
   const user = data?.user;
 
@@ -35,7 +33,7 @@ export default function Game() {
     return <div>Loading...</div>;
   }
   if (!isLoading && !user) {
-    return navigate("/");
+    return <Navigate to="/" replace />;
   }
   return (
     <div className="game-select bg-amber-200 w-2xl px-12 py-4 rounded-2xl">
