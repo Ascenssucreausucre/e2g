@@ -1,7 +1,7 @@
 // src/services/user.service.ts
 import { Chapter } from "../generated/prisma/client";
 import { prisma } from "../prisma/client";
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
 
 export async function createUser(email: string, password: string) {
   const hashedPassword = await bcrypt.hash(password, 12);
