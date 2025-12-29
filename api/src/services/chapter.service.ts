@@ -93,6 +93,23 @@ export async function updateChapter(
     throw new Error("No fields provided to update");
   }
 
+  const chapter = await prisma.chapter.findUnique({
+    where: { id },
+    include: {
+      dialogue: {
+        select: { id: true, content: true },
+      },
+    },
+  });
+
+  if (
+    updates.active === true &&
+    !chapter?.dialogue?.length &&
+    chapter?.dialogue?.length !== 0
+  ) {
+    throw new Error("Cannot activate chapter without dialogue");
+  }
+
   return prisma.chapter.update({
     where: { id },
     data: updates,

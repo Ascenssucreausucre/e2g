@@ -43,6 +43,7 @@ export async function getUserById(id: string) {
       username: true,
       email: true,
       createdAt: true,
+      admin: true,
     },
   });
 }

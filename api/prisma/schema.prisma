@@ -20,6 +20,7 @@ model User {
   password  String
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
+  admin     Boolean      @default(false)
 
   state     PlayerState?
   stateId   String?
